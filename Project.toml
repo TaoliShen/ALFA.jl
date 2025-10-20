@@ -1,9 +1,10 @@
 name = "ALFA"
 uuid = "f8dd4131-4bab-4a89-9326-aead9c214d0d"
-authors = ["Nils Kintscher", "Karsten Kahl"]
 version = "0.2.0"
+authors = ["Nils Kintscher", "Karsten Kahl"]
 
 [deps]
+AbstractAlgebra = "c3fe647b-3220-5bb0-a1ea-a7954cac585d"
 ColorSchemes = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
@@ -15,15 +16,16 @@ RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
+AbstractAlgebra = "0.33 - 0.52"
 ColorSchemes = "3.9"
 DataFrames = "0.22, 1.0"
 DataStructures = "0.18"
 Formatting = "0.4"
 MacroTools = "0.5"
-Nemo = "0.20"
+Nemo = "0.44 - 0.52"
 RecipesBase = "1"
 StaticArrays = "1.0"
-julia = "1.4"
+julia = "1.8 - 1.12"
 
 [extras]
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
