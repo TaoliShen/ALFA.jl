@@ -2,7 +2,7 @@ using Nemo
 using AbstractAlgebra          
 using StaticArrays
 
-const FmpzMat = Nemo.MatElem{Nemo.ZZRingElem}
+const FmpzMat = Nemo.MatElem{Nemo.ZZRingElem} # Nemo.fmpz_mat is obsolete
 
 function Base.convert(
     ::Type{FmpzMat},
@@ -27,7 +27,28 @@ end
 
 Wrapper of AbstractAlgebra.snf_with_transform. Input is converted to BigInt.
 Returns (S,U,V) such that U*mat*V = S, where S is the Smith normal form of mat.
+
+# Example
+```jldoctest
+julia> using ALFA # hide
+
+julia> using LinearAlgebra # hide
+
+julia> mat = rand(1:10, 10, 10);
+
+julia> (S,U,V) = ALFA.snf_with_transform(mat);
+
+julia> norm(U*mat*V - S) ≈ 0
+true
+                               
+julia> abs(det(U)) ≈ abs(det(V)) ≈ 1
+true
+
+julia> norm(diagm(diag(S)) - S) ≈ 0
+true
+```
 """
+
 function snf_with_transform(mat::MMatrix{M,N}) where {M,N}
     mat = convert(FmpzMat, mat)
     (S, U, V) = AbstractAlgebra.snf_with_transform(mat) # U*mat*V = S
@@ -52,8 +73,25 @@ end
 
 Wrapper of Nemo.hnf. Input is converted to BigInt.
 Returns H = mat*U, s.t. H is in Hermite Normal Form and U is unimodular.
+
+# Example
+```jldoctest
+julia> using ALFA # hide
+
+julia> using LinearAlgebra # hide
+
+julia> mat = rand(1:1000, 2, 2);
+
+julia> H = ALFA.hnf(mat);
+
+julia> norm(LinearAlgebra.tril(H) - H) ≈ 0
+true
+julia> round(abs(det(inv(mat)*H)), digits=5)
+1.0
+```
 """
 function hnf(mat::MMatrix{M,N}) where {M, N}
+    # computes the H = mat*U, s.t. H is in HNF and U is unimodular.
     mat = convert(FmpzMat, mat)
     H = transpose(Nemo.hnf(transpose(mat)))
     H = convert(MMatrix{size(H)...,BigInt}, H)
@@ -61,6 +99,7 @@ function hnf(mat::MMatrix{M,N}) where {M, N}
 end
 
 function hnf(mat::Matrix)
+    # computes the H = mat*U, s.t. H is in HNF and U is unimodular.
     mat = convert(FmpzMat, mat)
     H = transpose(Nemo.hnf(transpose(mat)))
     H = convert(Matrix{BigInt}, H)
@@ -71,10 +110,27 @@ end
     lll(mat::MMatrix{M,N}) where {M, N}
     lll(mat::Matrix)
 
+
 Wrapper of Nemo.lll. Input is converted to BigInt.
-Computes L such that mat*T = L for some unimodular T.
+Applies the LLL-Algorithm to the input mat.
+Computes output L, such that mat*T=L for some unimodular T.
+
+# Example
+```jldoctest
+julia> using ALFA # hide
+
+julia> using LinearAlgebra # hide
+
+julia> mat = rand(1:1000, 2, 2);
+
+julia> L = ALFA.lll(mat);
+
+julia> round(abs(det(inv(mat)*L)), digits=5)
+1.0
+```
 """
 function lll(mat::MMatrix{M,N}) where {M, N}
+    # computes L, such that mat*T = L for some unimodular T
     mat = convert(FmpzMat, mat)
     L = Nemo.lll(transpose(mat))
     L = transpose(L)
@@ -83,6 +139,7 @@ function lll(mat::MMatrix{M,N}) where {M, N}
 end
 
 function lll(mat::Matrix)
+    # computes L, such that mat*T = L for some unimodular T
     mat = convert(FmpzMat, mat)
     L = Nemo.lll(transpose(mat))
     L = transpose(L)
